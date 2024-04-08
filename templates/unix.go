@@ -15,7 +15,10 @@ func UnixAliases(alias *config.Alias) string {
 	return returnTemplate
 }
 
-func UnixSource(source *config.Source) string {
-	template := "source " + source.Path + "\n"
-	return template
+func UnixSource(source string) string {
+	return "source " + source + "\n"
+}
+
+func UnixPath(path string) string {
+	return "export PATH=$PATH:" + path + "\n"
 }

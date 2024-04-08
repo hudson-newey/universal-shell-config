@@ -15,7 +15,10 @@ func PowershellAliases(alias *config.Alias) string {
 	return returnTemplate
 }
 
-func PowershellSource(source *config.Source) string {
-	template := ". " + source.Path + "\n"
-	return template
+func PowershellSource(source string) string {
+	return ". " + source + "\n"
+}
+
+func PowershellPath(path string) string {
+	return "$env:PATH += \";" + path + "\"\n"
 }

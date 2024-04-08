@@ -7,34 +7,32 @@ import (
 
 type BuildConfig struct {
 	AliasConverter   func(alias *config.Alias) string
-	SourceConverter  func(source *config.Source) string
-	CommandConverter func(command *config.Command) string
+	SourceConverter  func(source string) string
+	CommandConverter func(command string) string
+	PathConverter    func(path string) string
 	outFile          string
 }
 
 var defaultBuildConfigs = []BuildConfig{
-	BuildConfig{
+	{
 		AliasConverter:   templates.UnixAliases,
 		SourceConverter:  templates.UnixSource,
 		CommandConverter: templates.BuildCommand,
+		PathConverter:    templates.UnixPath,
 		outFile:          ".zshrc",
 	},
-	BuildConfig{
+	{
 		AliasConverter:   templates.UnixAliases,
 		SourceConverter:  templates.UnixSource,
 		CommandConverter: templates.BuildCommand,
+		PathConverter:    templates.UnixPath,
 		outFile:          ".bashrc",
 	},
-	BuildConfig{
-		AliasConverter:   templates.UnixAliases,
-		SourceConverter:  templates.UnixSource,
-		CommandConverter: templates.BuildCommand,
-		outFile:          ".profile",
-	},
-	BuildConfig{
+	{
 		AliasConverter:   templates.PowershellAliases,
 		SourceConverter:  templates.PowershellSource,
 		CommandConverter: templates.BuildCommand,
+		PathConverter:    templates.PowershellPath,
 		outFile:          "Profile.ps1",
 	},
 }

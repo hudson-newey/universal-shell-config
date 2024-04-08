@@ -1,0 +1,55 @@
+@go.Package { name = "github.com/myorg/myteam/config" }
+module myorg.myteam.Config
+
+import "package://pkg.pkl-lang.org/pkl-go/pkl.golang@0.6.0#/go.pkl" 
+
+/// Shell aliases
+class Alias {
+    aliases: Listing<String>
+    command: String
+}
+
+aliases: Listing<Alias> = new {
+    new Alias {
+        aliases {"g"}
+        command = "git"
+    }
+    new Alias {
+        aliases {"q" "qa" "qq"}
+        command = "exit"
+    }
+}
+
+/// Shell sources
+class Source {
+    path: String
+}
+
+sources: Listing<Source> = new {
+    new Source {
+        path = "~/.local/bin"
+    }
+    new Source {
+        path = "~/.local/bin/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh"
+    }
+    new Source {
+        path = "~/.local/bin/zsh-autosuggestions/zsh-autosuggestions.zsh"
+    }
+    new Source {
+        path = "~/.local/bin"
+    }
+    new Source {
+        path = "/usr/sbin/"
+    }
+}
+
+/// pre-interation commands
+class Command {
+    command: String
+}
+
+commands: Listing<Command> = new {
+    new Command {
+        command = "echo 'Hello, World!'"
+    }
+}

@@ -13,5 +13,5 @@ func main() {
 		panic(err)
 	}
 
-	build.BuildTemplate(configuration, "out")
+	build.BuildTemplates(configuration, "out")
 }

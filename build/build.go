@@ -2,6 +2,8 @@ package build
 
 import (
 	"fmt"
+	"os/exec"
+	"strings"
 	"usc/config"
 )
 
@@ -10,48 +12,107 @@ func buildWarnings(filePath string) {
 	appendToFile(filePath, warnings)
 }
 
-func BuildTemplates(configuration *config.Config, outDir string) {
+func BuildTemplates(configuration *config.Config, outDir string, shouldInstall bool) {
 	var derivedBuildConfigs []BuildConfig
 
 	for _, buildConfig := range defaultBuildConfigs {
 		derivedBuildConfig := buildConfig
-		derivedBuildConfig.outFile = outDir + "/" + derivedBuildConfig.outFile
+		derivedBuildConfig.OutFile = "./" + outDir + "/" + derivedBuildConfig.OutFile
 		derivedBuildConfigs = append(derivedBuildConfigs, derivedBuildConfig)
 	}
 
+	if !directoryExists(outDir) {
+		createDirectory(outDir)
+	}
+
 	for _, bc := range derivedBuildConfigs {
-		if fileExists(bc.outFile) {
-			deleteFile(bc.outFile)
-			buildWarnings(bc.outFile)
+		if fileExists(bc.OutFile) {
+			deleteFile(bc.OutFile)
 		}
+
+		buildWarnings(bc.OutFile)
 	}
 
 	fmt.Println()
 	for _, buildConfig := range derivedBuildConfigs {
-		fmt.Println("Building " + buildConfig.outFile)
+		fmt.Println("Building", buildConfig.OutFile)
 
-		for _, alias := range configuration.Aliases {
-			aliasTemplate := buildConfig.AliasConverter(alias)
-			appendToFile(buildConfig.outFile, aliasTemplate)
+		for _, target := range configuration.Aliases {
+			if OutputSatisfiesTarget(buildConfig.OutFile, target.Files) {
+				for _, alias := range target.Items {
+					aliasTemplate := buildConfig.AliasConverter(alias)
+					appendToFile(buildConfig.OutFile, aliasTemplate)
+				}
+			}
 		}
 
-		for _, source := range configuration.Sources {
-			sourceTemplate := buildConfig.SourceConverter(source)
-			appendToFile(buildConfig.outFile, sourceTemplate)
+		for _, target := range configuration.Sources {
+			if OutputSatisfiesTarget(buildConfig.OutFile, target.Files) {
+				for _, source := range target.Items {
+					sourceTemplate := buildConfig.SourceConverter(source)
+					appendToFile(buildConfig.OutFile, sourceTemplate)
+				}
+			}
 		}
 
-		for _, path := range configuration.Paths {
-			pathTemplate := buildConfig.PathConverter(path)
-			appendToFile(buildConfig.outFile, pathTemplate)
+		for _, target := range configuration.Paths {
+			if OutputSatisfiesTarget(buildConfig.OutFile, target.Files) {
+				for _, path := range target.Items {
+					pathTemplate := buildConfig.PathConverter(path)
+					appendToFile(buildConfig.OutFile, pathTemplate)
+				}
+			}
 		}
 
 		// pre-interaction commands should always come last because they sometimes depend on
 		// aliases, sources, and paths
-		for _, command := range configuration.Commands {
-			commandTemplate := buildConfig.CommandConverter(command)
-			appendToFile(buildConfig.outFile, commandTemplate)
+		for _, target := range configuration.Commands {
+			if OutputSatisfiesTarget(buildConfig.OutFile, target.Files) {
+				for _, command := range target.Items {
+					commandTemplate := buildConfig.CommandConverter(command)
+					appendToFile(buildConfig.OutFile, commandTemplate)
+				}
+			}
+		}
+	}
+
+	if shouldInstall {
+		fmt.Println()
+		for _, buildConfig := range derivedBuildConfigs {
+			InstallBuild(buildConfig)
 		}
 	}
 
 	fmt.Println("\nDone!")
+}
+
+// TODO: split this into a septate package
+func InstallBuild(config BuildConfig) {
+	installationPath := config.InstallPath
+
+	fmt.Println("Installing", installationPath)
+
+	// TODO: I've hard coded the install path because I have to call $PROFILE inside a powershell session
+	// this is obviously not ideal. maybe a set of install scripts for every build config?
+	if installationPath == "Profile.ps1" {
+		out, err := exec.Command("./paths/profilePath.ps1").Output()
+		if err != nil {
+			panic(err)
+		}
+
+		installationPath = strings.TrimSuffix(string(out), "\n")
+	} else {
+		out, err := exec.Command("./paths/profilePath.sh").Output()
+		if err != nil {
+			panic(err)
+		}
+
+		installationPath = strings.TrimSuffix(string(out), "\n") + "/" + config.InstallPath
+	}
+
+	if fileExists(installationPath) {
+		deleteFile(installationPath)
+	}
+
+	copyFile(config.OutFile, installationPath)
 }

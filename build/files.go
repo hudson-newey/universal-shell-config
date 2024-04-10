@@ -1,6 +1,9 @@
 package build
 
-import "os"
+import (
+	"io"
+	"os"
+)
 
 func fileExists(path string) bool {
 	_, err := os.Stat(path)
@@ -19,6 +22,42 @@ func appendToFile(path string, contents string) {
 	defer file.Close()
 
 	if _, err := file.WriteString(contents); err != nil {
+		panic(err)
+	}
+}
+
+func createDirectory(path string) {
+	err := os.MkdirAll(path, os.ModePerm)
+	if err != nil {
+		panic(err)
+	}
+}
+
+func directoryExists(path string) bool {
+	stat, err := os.Stat(path)
+	if os.IsNotExist(err) {
+		return false
+	}
+
+	return stat.IsDir()
+
+}
+
+func copyFile(inPath string, outPath string) {
+	inFile, err := os.Open(inPath)
+	if err != nil {
+		panic(err)
+	}
+	defer inFile.Close()
+
+	outFile, err := os.Create(outPath)
+	if err != nil {
+		panic(err)
+	}
+	defer outFile.Close()
+
+	_, err = io.Copy(outFile, inFile)
+	if err != nil {
 		panic(err)
 	}
 }

@@ -1,0 +1,32 @@
+@go.Package { name = "github.com/myorg/myteam/config" }
+module myorg.myteam.Config
+import "package://pkg.pkl-lang.org/pkl-go/pkl.golang@0.6.0#/go.pkl" 
+
+typealias Path = String
+typealias Command = String
+typealias Plugin = String
+
+class Alias {
+    aliases: Listing<Command>
+    command: Command
+}
+
+/// A config output eg. Profile.ps1, .bashrc, .zshrc
+/// This can be used to only generate aliases, paths, sources, and commands for
+/// a subset of the shells
+/// eg. There is no use in creating a powertoys alias for a bash shell
+class Target {
+    files: Listing<Path>
+    items: Listing<String>
+}
+
+class AliasTarget {
+    files: Listing<Path>
+    items: Listing<Alias>
+}
+
+// If you want to create a config pkl file, I suggest that you ammend this ConfigTemplate
+aliases: Listing<AliasTarget>
+sources: Listing<Target>
+paths: Listing<Target>
+commands: Listing<Target>

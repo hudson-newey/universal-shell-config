@@ -1,0 +1,109 @@
+// This is an example USC config
+// You can use the command "usc.sh Example.sh" from this directory
+// to generate shell config files (created in ./out/)
+
+// if you want to share this config file outside of this project
+// you can easily inline the contents of "templates/ConfigTemplate.pkl"
+// into where the "amends" keyword is located (below)
+amends "templates/ConfigTemplate.pkl"
+
+/// Create command aliases
+aliases = new {
+    new AliasTarget {
+        files {"*"}
+        items {
+            new Alias { aliases {"l"} command = "ls -l" }
+            new Alias { aliases {"ll"} command = "ls -latrh" }
+            new Alias { aliases {"record"} command = "asciinema rec" }
+            new Alias { aliases {"em"} command = "emacs -Q -nw" }
+            new Alias { aliases {"ada"} command = "gnatmake" }
+            new Alias { aliases {"vsc"} command = "code ." }
+            new Alias { aliases {"g"} command = "git" }
+            new Alias { aliases {"ga"} command = "git add -A" }
+            new Alias { aliases {"gc"} command = "git commit" }
+            new Alias { aliases {"gp"} command = "git push" }
+            new Alias { aliases {"gs"} command = "ga;gc;gp" }
+            new Alias { aliases {"gm"} command = "git pull" }
+            new Alias { aliases {"gcl"} command = "git clone" }
+            new Alias { aliases {"n"} command = "npm" }
+            new Alias { aliases {"pn"} command = "pnpm" }
+            new Alias { aliases {"e"} command = "ls -t --color=auto --group-directories-first" }
+            new Alias { aliases {"ee"} command = "ls -talhv --group-directories-first" }
+            new Alias { aliases {"fman"} command = "compgen -c | fzf | xargs man" }
+            new Alias { aliases {"lg"} command = "lazygit" }
+            new Alias { aliases {"t"} command = "tmux" }
+            new Alias { aliases {"q" "qa" "qq"} command = "exit" }
+            // for (i in List(1, 2, 3, 4, 5)) {
+            //     new Alias { aliases { i * "u" } command = "cd " + i * ".." }
+            // }
+        }
+    }
+
+    new AliasTarget {
+        files {"Profile.ps1"}
+        items {
+            new Alias { aliases {"pt"} command = "powertoys" }
+        }
+    }
+
+    new AliasTarget {
+        files {".zshrc" ".bashrc"}
+        items {
+            new Alias { aliases {"c"} command = "xclip -selection clipboard" }
+            new Alias { aliases {"y"} command = "xclip -selection clipboard -o" }
+            new Alias { aliases {"cd"} command = "z" }
+        }
+    }
+}
+
+sources = new {
+    new Target {
+        files {"*"}
+        items {
+            "<(ng completion script)"
+        }
+    }
+
+    new Target {
+        files {".zshrc" ".bashrc"}
+        items {
+            "~/.local/bin"
+            "~/.local/bin/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh"
+            "~/.local/bin/zsh-autosuggestions/zsh-autosuggestions.zsh"
+            "~/.local/bin"
+            "/usr/sbin/"
+        }
+    }
+}
+
+/// Adds paths to PATH
+paths = new {
+    new Target {
+        files {".zshrc" ".bashrc"}
+        items {
+            "~/go/bin"
+            "~/.dotnet/tools"
+            "~/.cargo/bin"
+            "~/.config/emacs/bin"
+        }
+    }
+}
+
+/// Execute commands before the user can interact with the shell
+commands = new {
+    new Target {
+        files {".zshrc"}
+        items {
+            "export ZSH='$HOME/.oh-my-zsh'"
+            "ZSH_THEME='aussiegeek'"
+            "plugins=(git vi-mode)"
+        }
+    }
+
+    new Target {
+        files {".bashrc" ".zshrc"}
+        items {
+            "eval '$(zoxide init zsh)'"
+        }
+    }
+}

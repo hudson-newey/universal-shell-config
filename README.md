@@ -2,6 +2,8 @@
 
 A program to generate `.zshrc`, `.bashrc`, and `Profile.ps1` shell configs from a PKL config `<file>`
 
+This program is currently in a usable, but very messy state and I plan to "improve" the pkl Config format in the future with breaking changes.
+
 ## Usage
 
 ```sh

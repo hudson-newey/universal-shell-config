@@ -6,5 +6,5 @@ if [ "$#" -lt 1 ]; then
   exit 1
 fi
 
-pkl-gen-go $1 --base-path github.com/myorg/myteam > /dev/null
+pkl-gen-go $2 --base-path github.com/myorg/myteam > /dev/null
 go run main.go $@

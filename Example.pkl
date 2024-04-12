@@ -14,7 +14,7 @@ variables = new {
         items {
             new EnvVariable { name = "ZSH" value = "$HOME/.oh-my-zsh" }
             new EnvVariable { name = "ZSH_THEME" value = "aussiegeek" }
-            new EnvVariable { name = "plugins" value = "(git vi-mode)" }
+            new EnvVariable { name = "plugin" value = "(git vi-mode)" }
         }
     }
 }
@@ -32,10 +32,7 @@ aliases = new {
             new Alias { aliases {"vsc"} command = "code ." }
             new Alias { aliases {"g"} command = "git" }
             new Alias { aliases {"ga"} command = "git add -A" }
-            new Alias { aliases {"gc"} command = "git commit" }
-            new Alias { aliases {"gp"} command = "git push" }
             new Alias { aliases {"gs"} command = "ga;gc;gp" }
-            new Alias { aliases {"gm"} command = "git pull" }
             new Alias { aliases {"gcl"} command = "git clone" }
             new Alias { aliases {"n"} command = "npm" }
             new Alias { aliases {"pn"} command = "pnpm" }
@@ -64,32 +61,30 @@ aliases = new {
             new Alias { aliases {"c"} command = "xclip -selection clipboard" }
             new Alias { aliases {"y"} command = "xclip -selection clipboard -o" }
             new Alias { aliases {"cd"} command = "z" }
+
+            // powershell already has read only aliases for these commands
+            // therefore, we can only define gc, gp, and gm aliases on linux
+            new Alias { aliases {"gc"} command = "git commit" }
+            new Alias { aliases {"gp"} command = "git push" }
+            new Alias { aliases {"gm"} command = "git pull" }
         }
     }
 }
 
 sources = new {
     new Target {
-        files {"*"}
-        items {
-            "<(ng completion script)"
-        }
-    }
-
-    new Target {
         files {".zshrc"}
         items {
             "$ZSH/oh-my-zsh.sh"
+            "~/.local/bin/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh"
+            "~/.local/bin/zsh-autosuggestions/zsh-autosuggestions.zsh"
         }
     }
 
     new Target {
         files {".zshrc" ".bashrc"}
         items {
-            "~/.local/bin/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh"
-            "~/.local/bin/zsh-autosuggestions/zsh-autosuggestions.zsh"
-            "/usr/sbin/"
-            "~/.local/bin/"
+            "<(ng completion script)"
         }
     }
 }

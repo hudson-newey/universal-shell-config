@@ -7,6 +7,18 @@
 // into where the "amends" keyword is located (below)
 amends "templates/ConfigTemplate.pkl"
 
+/// Creates environment variables at the start of initilization
+variables = new {
+    new EnvVariableTarget {
+        files {".zshrc"}
+        items {
+            new EnvVariable { name = "ZSH" value = "$HOME/.oh-my-zsh" }
+            new EnvVariable { name = "ZSH_THEME" value = "aussiegeek" }
+            new EnvVariable { name = "plugins" value = "(git vi-mode)" }
+        }
+    }
+}
+
 /// Create command aliases
 aliases = new {
     new AliasTarget {
@@ -65,13 +77,19 @@ sources = new {
     }
 
     new Target {
+        files {".zshrc"}
+        items {
+            "$ZSH/oh-my-zsh.sh"
+        }
+    }
+
+    new Target {
         files {".zshrc" ".bashrc"}
         items {
-            "~/.local/bin"
             "~/.local/bin/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh"
             "~/.local/bin/zsh-autosuggestions/zsh-autosuggestions.zsh"
-            "~/.local/bin"
             "/usr/sbin/"
+            "~/.local/bin/"
         }
     }
 }
@@ -85,6 +103,7 @@ paths = new {
             "~/.dotnet/tools"
             "~/.cargo/bin"
             "~/.config/emacs/bin"
+            "/usr/sbin/"
         }
     }
 }
@@ -92,18 +111,9 @@ paths = new {
 /// Execute commands before the user can interact with the shell
 commands = new {
     new Target {
-        files {".zshrc"}
-        items {
-            "export ZSH='$HOME/.oh-my-zsh'"
-            "ZSH_THEME='aussiegeek'"
-            "plugins=(git vi-mode)"
-        }
-    }
-
-    new Target {
         files {".bashrc" ".zshrc"}
         items {
-            "eval '$(zoxide init zsh)'"
+            "eval \"$(zoxide init zsh)\""
         }
     }
 }

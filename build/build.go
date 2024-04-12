@@ -37,11 +37,11 @@ func BuildTemplates(configuration *config.Config, outDir string, shouldInstall b
 	for _, buildConfig := range derivedBuildConfigs {
 		fmt.Println("Building", buildConfig.OutFile)
 
-		for _, target := range configuration.Aliases {
+		for _, target := range configuration.Variables {
 			if OutputSatisfiesTarget(buildConfig.OutFile, target.Files) {
-				for _, alias := range target.Items {
-					aliasTemplate := buildConfig.AliasConverter(alias)
-					appendToFile(buildConfig.OutFile, aliasTemplate)
+				for _, variable := range target.Items {
+					variableTemplate := buildConfig.EnvVariableConverter(variable)
+					appendToFile(buildConfig.OutFile, variableTemplate)
 				}
 			}
 		}
@@ -51,6 +51,15 @@ func BuildTemplates(configuration *config.Config, outDir string, shouldInstall b
 				for _, source := range target.Items {
 					sourceTemplate := buildConfig.SourceConverter(source)
 					appendToFile(buildConfig.OutFile, sourceTemplate)
+				}
+			}
+		}
+
+		for _, target := range configuration.Aliases {
+			if OutputSatisfiesTarget(buildConfig.OutFile, target.Files) {
+				for _, alias := range target.Items {
+					aliasTemplate := buildConfig.AliasConverter(alias)
+					appendToFile(buildConfig.OutFile, aliasTemplate)
 				}
 			}
 		}

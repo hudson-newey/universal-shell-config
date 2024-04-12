@@ -11,6 +11,11 @@ class Alias {
     command: Command
 }
 
+class EnvVariable {
+    name: String
+    value: String
+}
+
 /// A config output eg. Profile.ps1, .bashrc, .zshrc
 /// This can be used to only generate aliases, paths, sources, and commands for
 /// a subset of the shells
@@ -25,7 +30,13 @@ class AliasTarget {
     items: Listing<Alias>
 }
 
+class EnvVariableTarget {
+    files: Listing<Path>
+    items: Listing<EnvVariable>
+}
+
 // If you want to create a config pkl file, I suggest that you ammend this ConfigTemplate
+variables: Listing<EnvVariableTarget>
 aliases: Listing<AliasTarget>
 sources: Listing<Target>
 paths: Listing<Target>

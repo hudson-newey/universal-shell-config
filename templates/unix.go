@@ -22,3 +22,7 @@ func UnixSource(source string) string {
 func UnixPath(path string) string {
 	return "export PATH=$PATH:" + path + "\n"
 }
+
+func UnixEnvVariable(variable *config.EnvVariable) string {
+	return "export " + variable.Name + "=\"" + variable.Value + "\"\n"
+}

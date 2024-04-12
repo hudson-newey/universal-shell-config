@@ -22,3 +22,7 @@ func PowershellSource(source string) string {
 func PowershellPath(path string) string {
 	return "$env:PATH += \";" + path + "\"\n"
 }
+
+func PowershellEnvVariable(variable *config.EnvVariable) string {
+	return "$env:" + variable.Name + " = \"" + variable.Value + "\"\n"
+}

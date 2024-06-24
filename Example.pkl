@@ -98,6 +98,7 @@ paths = new {
             "~/.dotnet/tools"
             "~/.cargo/bin"
             "~/.config/emacs/bin"
+            "~/bin"
             "/usr/sbin/"
         }
     }

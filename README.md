@@ -15,3 +15,10 @@ Options
 
 - `-o=<path>` Output directory that the script will use
 - `--install` Replaces the system `.bashrc`, `.zshrc` and `Profile.ps1` configs with the generated configs
+
+## How to run tests
+
+```sh
+$ go test ./...
+>
+```
